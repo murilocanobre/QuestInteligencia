@@ -5,6 +5,7 @@ const authMiddleware = require('../Middleware/auth');
 
 const authConfig = require('../config/auth.json');
 const User = require('../Models/user');
+const Transacao = require('../Models/transacoes');
 
 const router = express.Router();
 
@@ -81,4 +82,4 @@ router.post('/authenticate', async (req, res) => {
   });
 });
 
-module.exports = (app) => app.use('/', router);
+module.exports = (app) => app.use('/users', router);
