@@ -9,4 +9,4 @@ app.use(bodyParser.urlencoded({ extended: false }));
 require('./Controllers/authController')(app);
 require('./Controllers/transacaoController')(app);
 
-app.listen(3000);
+app.listen(3001);
