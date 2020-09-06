@@ -3,7 +3,6 @@ const authMiddleware = require('../Middleware/auth');
 
 const Transacao = require('../Models/transacoes');
 const Balance = require('../Models/balance');
-const User = require('../Models/user');
 
 const router = express.Router();
 
@@ -21,7 +20,8 @@ router.post('/', async (req, res) => {
 
       const transacao = await Transacao.create({ ...req.body, user_id: req.userId });
 
-      await Balance.updateOne({ user_id: { $eq: req.userId } }, {outcome: newBalance,total:newTotal} );
+      await Balance.updateOne({ user_id: { $eq: req.userId } },
+        { outcome: newBalance, total: newTotal });
 
       return res.send([transacao, { income, outcome: newBalance, total: (income - newBalance) }]);
     }
@@ -29,13 +29,14 @@ router.post('/', async (req, res) => {
       if (await Balance.findOne({ user_id: { $eq: req.userId } })) {
         const balance = await Balance.findOne({ user_id: { $eq: req.userId } });
         const transacao = await Transacao.create({ ...req.body, user_id: req.userId });
-        const { outcome, user_id } = balance;
+        const { outcome } = balance;
         const newBalance = (balance.income + req.body.value);
         const newTotal = (newBalance - outcome);
-        await Balance.updateOne({ user_id: { $eq: req.userId } }, {income: newBalance,total:newTotal} );
+        await Balance.updateOne({ user_id: { $eq: req.userId } },
+          { income: newBalance, total: newTotal });
 
         return res.json(
-          [transacao, {income: newBalance, outcome, total: newTotal}],
+          [transacao, { income: newBalance, outcome, total: newTotal }],
         );
       }
     }
@@ -57,8 +58,8 @@ router.get('/:user_id', async (req, res) => {
 
     const transacao = await Transacao.find({ user_id: { $eq: user_id } });
     const balance = await Balance.findOne({ user_id: { $eq: user_id } });
-    const {income, outcome, total} = balance;
-    return res.json([transacao, {income, outcome, total}]);
+    const { income, outcome, total } = balance;
+    return res.json([transacao, { income, outcome, total }]);
   } catch (e) {
     return res.status(400).send({ error: 'Erro ao buscar' });
   }

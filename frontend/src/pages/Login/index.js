@@ -1,27 +1,60 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { isEmail } from 'validator';
+import { useDispatch, useSelector } from 'react-redux';
+import { get } from 'lodash';
 
 import { Container } from '../../styles/GlobalStyles';
-import { Tittle, Paragrafo } from './styled';
-import * as exampleActions from '../../store/modules/example/actions';
+import { Form } from './styled';
+import * as actions from '../../store/modules/auth/actions';
 
-export default function Login() {
-  const disparador = useDispatch();
+export default function Login(props) {
+  const id = useSelector((state) => state.auth.user._id);
 
-  function handleClick(e) {
+  const dispatch = useDispatch();
+  const prevPath = get(props, 'location.state.prevPath', `/dashboard/`);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  function handleSubmit(e) {
     e.preventDefault();
-    disparador(exampleActions.clicaBotaoRequest());
+    let formErrors = false;
+
+    if (!isEmail(email)) {
+      formErrors = true;
+      toast.error('Email inválido');
+    }
+    if (password.length < 6 || password.length > 50) {
+      formErrors = true;
+      toast.error('Senha inválida');
+    }
+    if (formErrors) return;
+    dispatch(actions.loginRequest({ email, password, prevPath }));
   }
+
   return (
     <Container>
-      <Tittle>
-        Login
-        <small>Oie</small>
-      </Tittle>
-      <Paragrafo>dd</Paragrafo>
-      <button type="button" onClick={handleClick}>
-        Enviar
-      </button>
+      <h1>Login</h1>
+      <Form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Seu email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Sua Senha"
+        />
+        <button type="submit">Acessar</button>
+        <center>
+          <h3>
+            <a href="/register">Criar nova conta</a>
+          </h3>
+        </center>
+      </Form>
     </Container>
   );
 }
