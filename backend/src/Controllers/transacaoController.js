@@ -12,7 +12,7 @@ router.use(authMiddleware);
 router.post('/', async (req, res) => {
   try {
     if (req.body.type === 'outcome') {
-      const balance = await Balance.findOne();
+      const balance = await Balance.findOne({ user_id: { $eq: req.userId } });
       const { income } = balance;
 
       const newBalance = (balance.outcome + req.body.value);
@@ -21,21 +21,21 @@ router.post('/', async (req, res) => {
 
       const transacao = await Transacao.create({ ...req.body, user_id: req.userId });
 
-      await Balance.update({ outcome: newBalance, total: newTotal });
+      await Balance.updateOne({ user_id: { $eq: req.userId } }, {outcome: newBalance,total:newTotal} );
 
       return res.send([transacao, { income, outcome: newBalance, total: (income - newBalance) }]);
     }
     if (req.body.type === 'income') {
-      if (await Balance.findOne()) {
-        const balance = await Balance.findOne();
+      if (await Balance.findOne({ user_id: { $eq: req.userId } })) {
+        const balance = await Balance.findOne({ user_id: { $eq: req.userId } });
         const transacao = await Transacao.create({ ...req.body, user_id: req.userId });
         const { outcome, user_id } = balance;
         const newBalance = (balance.income + req.body.value);
         const newTotal = (newBalance - outcome);
-        await Balance.update({ income: newBalance, total: newTotal });
+        await Balance.updateOne({ user_id: { $eq: req.userId } }, {income: newBalance,total:newTotal} );
 
-        return res.send(
-          [transacao, { income: newBalance, outcome, total: (newBalance - outcome) }],
+        return res.json(
+          [transacao, {income: newBalance, outcome, total: newTotal}],
         );
       }
     }
@@ -56,8 +56,9 @@ router.get('/:user_id', async (req, res) => {
     const { user_id } = req.params;
 
     const transacao = await Transacao.find({ user_id: { $eq: user_id } });
-    const balance = await Balance.find({ user_id: { $eq: user_id } });
-    return res.json([transacao, balance]);
+    const balance = await Balance.findOne({ user_id: { $eq: user_id } });
+    const {income, outcome, total} = balance;
+    return res.json([transacao, {income, outcome, total}]);
   } catch (e) {
     return res.status(400).send({ error: 'Erro ao buscar' });
   }
