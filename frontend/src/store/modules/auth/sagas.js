@@ -52,7 +52,7 @@ function* registerRequest({ payload }) {
     if (errors.length > 0) {
       errors.map((error) => toast.error(error));
     } else {
-      toast.error('Digite sua senha ou altere a mesma');
+      toast.error('Erro');
     }
     yield put(actions.registerFailure());
   }

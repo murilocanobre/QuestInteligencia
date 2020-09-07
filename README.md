@@ -27,14 +27,16 @@ passar email e password. Ao logar é gerado um token para acessar as rotas propo
 Com Autenticação
 Edição de usuários é pelo caminho /users/id pelo método PUT
 Listagem dos dados do usuário pelo caminho /users/id pelo método GET
+logout é pelo caminho /users/logout/id
 
 para cadastro de transações  é pelo caminho /transacao pelo método POST
 onde se passa os parametros 
 title, value e type. 
+É Retornado o id da transação, title, value, type e o userID. E é retornado também o quanto de income, outcome e total que já está na base de dados
 
 O cadastro não deixa o valor do total ficar negativo. Ao perceber que irá ficar negativo retorna HTTP 400 e não cadastra
 
-para listagem das transações é pelo caminho /transacao/user_id pelo método GET
+para listagem das transações é pelo caminho /transacao/user_id pelo método GET. É retornado todas as trasnações realizadas pelo user e o balance, com income, outcome e total.
 
 FrontEnd
 Foi desenvolvido em ReactJs
