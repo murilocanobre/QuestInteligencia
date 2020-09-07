@@ -22,18 +22,7 @@ export default function Dashboard() {
     <Container>
       <Nav>
         {' '}
-        <h3>
-          <a href="/dashboard/">Dashboard </a>
-        </h3>
-        <h3>
-          <a href="/dashboard/transacao">Nova Transação </a>
-        </h3>
-        <h3>
-          <a href="/dashboard/meuPerfil">Meu Perfil </a>
-        </h3>
-        <h3>
-          <a href="/dashboard/logout">Logout </a>
-        </h3>
+        <h3>Transações</h3>
       </Nav>
       <DashboardContainer>
         {transacoes.map((transacao) => (

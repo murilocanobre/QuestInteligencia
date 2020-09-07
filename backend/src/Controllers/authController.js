@@ -55,9 +55,13 @@ router.post('/register', async (req, res) => {
 
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    console.log(user);
-    return res.send({ user });
+    const { name, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
+
+    const user = await User.findByIdAndUpdate(req.params.id,
+      { name, email, password: hash }, { new: true });
+
+    return res.send({ name, email, password: hash });
   } catch (err) {
     return res.status(400).send({ error: 'Erro carregar Usuário' });
   }

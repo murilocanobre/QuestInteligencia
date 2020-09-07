@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import MyRoute from './myroute';
 import Login from '../pages/Login';
@@ -20,6 +20,9 @@ export default function Routes() {
         component={Transacao}
         isClosed
       />
+      <Route exact path="/">
+        <Redirect to="/dashboard" />
+      </Route>
 
       <MyRoute exact path="/login/" component={Login} isClosed={false} />
       <MyRoute path="*" component={Page404} />

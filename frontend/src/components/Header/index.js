@@ -1,21 +1,47 @@
 import React from 'react';
-import { FaHome, FaSignInAlt } from 'react-icons/fa';
+import {
+  FaHome,
+  FaUserAlt,
+  FaSignInAlt,
+  FaPowerOff,
+  FaMoneyBillAlt,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../store/modules/auth/actions';
+import history from '../../services/history';
 import { Nav } from './styled';
 
 export default function Header() {
-  const id = useSelector((state) => state.auth.user._id);
-
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch(actions.loginFailure());
+    history.push('/');
+  };
   return (
     <Nav>
       <Link to="/dashboard/">
         <FaHome size={24} />
       </Link>
-      <Link to="/Login">
-        <FaSignInAlt size={24} />
-      </Link>
+      {isLoggedIn ? (
+        <>
+          <Link to="/dashboard/transacao">
+            <FaMoneyBillAlt size={24} />
+          </Link>
+          <Link to="/register">
+            <FaUserAlt size={24} />
+          </Link>
+          <Link onClick={handleLogout} to="/logout">
+            <FaPowerOff size={24} />
+          </Link>{' '}
+        </>
+      ) : (
+        <Link to="/login">
+          <FaSignInAlt size={24} />
+        </Link>
+      )}
     </Nav>
   );
 }
